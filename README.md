@@ -1,5 +1,5 @@
 # sxcp  
-A Simple/Small/Suckless X11 Color Picker  
+A Small/Simple/Suckless X11 Color Picker  
 This lightweight utility allows you to quickly and easily pick the color of any pixel displayed on your screen, and print it to stdout.
 
 ## Usage  
@@ -18,8 +18,10 @@ sxcp can be run without arguments, but the following exist:
 - Xlib
 
 ## Compilation
-`git clone` this repository  
-`make`
+`git clone https://github.com/space-pagan/sxcp.git`  
+`make`  
+Running `make` for the first time will generate `config.h` out of `config.def.h`. Do not edit `config.def.h` to set your preferences.  
+If you want to change your configuration, edit `config.h` and recompile.
 
 ## Installation
 `sudo make install` will install sxcp to `/usr/local/bin` by default. PREFIX can be set to alter this behaviour.
