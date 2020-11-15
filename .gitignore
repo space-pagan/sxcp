@@ -3,3 +3,5 @@ sxcp
 *.o
 *.d
 *.1
+
+config.h
