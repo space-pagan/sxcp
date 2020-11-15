@@ -10,14 +10,16 @@ const bool verboseZoom = true;      // display a message when zooming
 enum { LOCK, UNLOCK, TOGGLE };
 
 static Key keys[] = {
-    {0, XK_l, lockPreview, {.i = TOGGLE}},     // l to lock preview
-    {0, XK_q, quit, {}},            // q to quit
-    {0, XK_equal, change_zoom, {.i = +2}}, // = to decrese preview pixel width by 1
-    {0, XK_minus, change_zoom, {.i = -2}}, // - to increase preview pixel width by 1
-    {0, XK_0, change_zoom, {.i = 0}}, // 0 to reset preview pixel width
+    //mod,   X11 KeySym,  function,           {options}     
+    { 0,     XK_l,        lockPreview,        {.i = TOGGLE}}, // l to lock
+    { 0,     XK_q,        quit,               {}},            // q to quit
+    { 0,     XK_equal,    change_zoom,        {.i = +2}}, // = to zoom in
+    { 0,     XK_minus,    change_zoom,        {.i = -2}}, // - to zoom out
+    { 0,     XK_0,        change_zoom,        {.i = 0}},  // 0 to reset zoom
 };
 
 static Button buttons[] = {
-    {0, 1, select, {}},
-    {0, 3, quit, {}},
+    //mod,   MouseButton, function,           {options}     
+    { 0,     1,           select,             {}}, // left-click to select
+    { 0,     3,           quit,               {}}, // right-click to quit
 };
