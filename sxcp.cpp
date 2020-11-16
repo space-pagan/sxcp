@@ -21,7 +21,7 @@ static int pixArraySizeX;
 static int pixArraySizeY;
 static int offsetX;
 static int offsetY;
-static XColor** pixels;
+static XColor** pixels = nullptr;
 
 void die(std::string msg);
 void setWMClass();
@@ -98,7 +98,7 @@ void prepareXWindow(int sizeX, int sizeY) {
     int whiteColor = WhitePixel(d, DefaultScreen(d));
     int screenheight = DisplayHeight(d, DefaultScreen(d));
 
-    w = XCreateSimpleWindow(d, root, 0, screenheight-sizeY-15, sizeX, sizeY, 
+    w = XCreateSimpleWindow(d, root, 0, 0, sizeX, sizeY, 
             0, whiteColor, whiteColor);
     setWMClass();
     
@@ -109,8 +109,9 @@ void prepareXWindow(int sizeX, int sizeY) {
 
     // wait for MapNotify event
     for (XEvent e; e.type != MapNotify; XNextEvent(d, &e));
-    // give the WM time to resize and reposition the window
-    std::this_thread::sleep_for(std::chrono::milliseconds(500));
+
+    // reposition window after any windows managers have attempted to relocate 
+    XMoveResizeWindow(d, w, 0, screenheight-sizeY-15, sizeX, sizeY);
 }
 
 void getPixels(int x, int y) {
@@ -238,14 +239,16 @@ void select(const Arg* arg) {
 }
 
 void fixDimensionVariables() {
-    for (int i = 0; i < pixArraySizeX; i++) {
-        delete[] pixels[i];
+    if (pixels != nullptr) {
+        for (int i = 0; i < pixArraySizeX; i++) {
+            delete[] pixels[i];
+        }
+        delete[] pixels;
     }
-    delete[] pixels;
     unsigned int dispwidth, dispheight;
     getCurrentSize(dispwidth, dispheight);
-    pixArraySizeX = dispwidth/zoom;
-    pixArraySizeY = dispheight/zoom;
+    pixArraySizeX = std::max((int)dispwidth/zoom, 1);
+    pixArraySizeY = std::max((int)dispheight/zoom, 1);
     pixels = new XColor*[pixArraySizeX];
     for (int i = 0; i < pixArraySizeX; i++) {
         pixels[i] = new XColor[pixArraySizeY];
