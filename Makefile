@@ -1,13 +1,14 @@
 PREFIX ?= /usr/local
 
-CC  := g++ -std=c++11 -lX11 -Wall -g
+CC  	:= g++ -Wall -g
+CFLAGS  := -lX11 -std=c++11
 
 .PHONY: all clean install uninstall
 
 all: sxcp
 
 sxcp: sxcp.cpp config.def.h config.h
-	$(CC) $< -o $@
+	$(CC) -o $@ $< $(CFLAGS)
 
 config.h:
 	cp config.def.h $@

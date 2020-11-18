@@ -90,6 +90,19 @@ void getCurrentSize(unsigned int& width, unsigned int& height) {
     XGetGeometry(d, w, &rootwin, &posx, &posy, &width, &height, &border, &bitdepth);
 }
 
+bool isMouseOnWindow(int mousePosX, int mousePosY) {
+    Window rootwin;
+    int winPosX, winPosY;
+    unsigned int width, height, border, bitdepth;
+    XGetGeometry(d, w, &rootwin, &winPosX, &winPosY, &width, &height, &border, &bitdepth);
+    if ((unsigned int)mousePosX >= (unsigned int)winPosX &&
+        (unsigned int)mousePosX <= (unsigned int)(winPosX + width) &&
+        (unsigned int)mousePosY >= (unsigned int)winPosY &&
+        (unsigned int)mousePosY <= (unsigned int)(winPosY + height))
+            return true;
+    return false;
+}
+
 void prepareXWindow(int sizeX, int sizeY) {
     d = XOpenDisplay(NULL); // open the default display
     root = DefaultRootWindow(d);
@@ -123,6 +136,7 @@ void getPixels(int x, int y) {
         }
     }
     XFree(image);
+    XQueryColor(d, DefaultColormap(d, DefaultScreen(d)), &pixels[offsetX][offsetY]);
 }
 
 void getMouseCoordinates(int& x, int& y) {
@@ -173,12 +187,7 @@ void drawPixelPreview() {
 }
 
 void drawPixelSelector() {
-        XColor center = pixels[offsetX][offsetY];
-        XQueryColor(d, DefaultColormap(d, DefaultScreen(d)), &center);
-        pixels[offsetX][offsetY].red = center.red;
-        pixels[offsetX][offsetY].green = center.green;
-        pixels[offsetX][offsetY].blue = center.blue;
-        int inv = getInvertedColor(&center);
+        int inv = getInvertedColor(&pixels[offsetX][offsetY]);
         XSetForeground(d, gc, inv);
         XDrawRectangle(d, w, gc, offsetX*zoom, offsetY*zoom, zoom, zoom);
 }
@@ -292,10 +301,10 @@ void main_loop(int previewSizeX, int previewSizeY) {
         getMouseCoordinates(mousePosX, mousePosY);
         fixOffset( mousePosX, mousePosY, screenheight, screenwidth);
         getPixels(mousePosX-offsetX, mousePosY-offsetY);
-        if (!previewLocked) {
+        if (!previewLocked && !isMouseOnWindow(mousePosX, mousePosY)) {
             drawPixelPreview();
+            drawPixelSelector();
         }
-        drawPixelSelector();
         XFlush(d);
         if (XCheckWindowEvent(d, root, ButtonPressMask | KeyPressMask, &event)) {
             switch(event.type) {
