@@ -16,7 +16,7 @@ config.h:
 clean:
 	@${RM} -f *.o sxcp
 
-install:
+install: sxcp
 	mkdir -p $(DESTDIR)$(PREFIX)/bin
 	install -m 0755 sxcp $(DESTDIR)$(PREFIX)/bin/sxcp
 
