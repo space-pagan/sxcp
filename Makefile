@@ -14,11 +14,11 @@ config.h:
 	cp config.def.h $@
 
 clean:
-	@${RM} -f *.o sxcp
+	@${RM} -vf *.o sxcp
 
 install: sxcp
 	mkdir -p $(DESTDIR)$(PREFIX)/bin
 	install -m 0755 sxcp $(DESTDIR)$(PREFIX)/bin/sxcp
 
 uninstall:
-	@${RM} -f $(DESTDIR)$(PREFIX)/bin/sxcp
+	@${RM} -vf $(DESTDIR)$(PREFIX)/bin/sxcp
