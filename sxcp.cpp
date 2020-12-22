@@ -76,8 +76,8 @@ void die(std::string msg) {
 
 void setWMClass() {
     XClassHint classhint;
-    char hint_name[10] = "colortest";
-    char hint_class[10] = "colortest";
+    char hint_name[10] = "sxcp";
+    char hint_class[10] = "sxcp";
     classhint.res_name = hint_name;
     classhint.res_class = hint_class;
     XSetClassHint(d, w, &classhint);
